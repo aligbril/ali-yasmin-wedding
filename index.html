@@ -464,7 +464,7 @@
 
 <div class="toast" id="toast"></div>
 
-<audio id="bgMusic" src="assets/music/song.mp3" loop preload="auto"></audio>
+<audio id="bgMusic" preload="auto"></audio>
 <button id="musicToggle" aria-label="تشغيل/إيقاف الموسيقى">
   <svg viewBox="0 0 24 24" fill="none" stroke-width="2.5" stroke-linecap="round">
     <line class="bar" x1="7" y1="16" x2="7" y2="8"></line>
@@ -488,9 +488,28 @@
   })();
 
   // Open cover + start music (this tap is what lets browsers allow audio)
-  const bgMusic = document.getElementById('bgMusic');
+    const bgMusic = document.getElementById('bgMusic');
   const musicToggle = document.getElementById('musicToggle');
   bgMusic.volume = 0.5;
+
+  // رتّب الأغاني هنا بالترتيب اللي عايزها تشتغل بيه
+  const playlist = [
+    'assets/music/ashan_bhbk.mp3',
+    'assets/music/song.mp3'
+  ];
+  let trackIndex = 0;
+
+  function loadTrack(index){
+    bgMusic.src = playlist[index];
+  }
+  loadTrack(trackIndex);
+
+  // لما الأغنية تخلص، انتقل للي بعدها (وارجع للأولى تاني بعد آخر أغنية)
+  bgMusic.addEventListener('ended', function(){
+    trackIndex = (trackIndex + 1) % playlist.length;
+    loadTrack(trackIndex);
+    bgMusic.play().catch(function(){});
+  });
 
   document.getElementById('openBtn').addEventListener('click', function(){
     document.getElementById('cover').classList.add('opened');
