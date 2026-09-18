@@ -595,7 +595,19 @@ const target = new Date('2026-10-21T20:00:00');  function updateCountdown(){
       showToast('انسخ الرابط من شريط العنوان');
     });
   });
-
+// شغّل الموسيقى تلقائيًا من أول تفاعل للزائر مع الصفحة (تاتش أو كليك)
+// المتصفحات بتمنع التشغيل التلقائي بدون أي تفاعل، فده أقرب حاجة ممكنة لتشغيل تلقائي فوري
+let musicStarted = false;
+function tryStartMusic(){
+  if(musicStarted) return;
+  bgMusic.play().then(function(){
+    musicStarted = true;
+    document.removeEventListener('touchstart', tryStartMusic);
+    document.removeEventListener('click', tryStartMusic);
+  }).catch(function(){ /* هيحاول تاني مع أول تفاعل */ });
+}
+document.addEventListener('touchstart', tryStartMusic, {passive:true});
+document.addEventListener('click', tryStartMusic);
   function showToast(text){
     const t = document.getElementById('toast');
     t.textContent = text;
